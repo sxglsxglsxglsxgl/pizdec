@@ -9,6 +9,17 @@
   --viewport-effects-unit: 1vh;
   --overscroll-bleed: clamp(120px, calc(var(--viewport-unit) * 16), 240px);
   --overscroll-effects-bleed: clamp(120px, calc(var(--viewport-effects-unit) * 16), 240px);
+  --edge-fade-height: clamp(160px, calc(var(--viewport-effects-unit) * 34), 360px);
+  --edge-ambient-height: clamp(200px, calc(var(--viewport-effects-unit) * 42), 420px);
+  --edge-fade-gradient-top: linear-gradient(to bottom, rgba(5, 5, 5, 0.9) 0%, rgba(5, 5, 5, 0) 60%);
+  --edge-fade-gradient-bottom: linear-gradient(to top, rgba(5, 5, 5, 0.9) 0%, rgba(5, 5, 5, 0) 60%);
+  --edge-ambient-gradient-bottom: linear-gradient(
+      to top,
+      rgba(5, 5, 5, 0.88) 0%,
+      rgba(5, 5, 5, 0.52) 45%,
+      rgba(5, 5, 5, 0.18) 85%,
+      rgba(5, 5, 5, 0) 100%
+    );
   --safe-area-top: 0px;
   --safe-area-right: 0px;
   --safe-area-bottom: 0px;
@@ -120,24 +131,18 @@ body::after {
   pointer-events: none;
   z-index: 2;
   background-image:
-    linear-gradient(to bottom, rgba(5, 5, 5, 0.9) 0%, rgba(5, 5, 5, 0) 60%),
-    linear-gradient(to top, rgba(5, 5, 5, 0.9) 0%, rgba(5, 5, 5, 0) 60%),
-    linear-gradient(
-      to top,
-      rgba(5, 5, 5, 0.88) 0%,
-      rgba(5, 5, 5, 0.52) 45%,
-      rgba(5, 5, 5, 0.18) 85%,
-      rgba(5, 5, 5, 0) 100%
-    );
+    var(--edge-fade-gradient-top),
+    var(--edge-fade-gradient-bottom),
+    var(--edge-ambient-gradient-bottom);
   background-position:
     center calc(var(--overscroll-effects-bleed) + var(--safe-area-top)),
     center calc(100% - (var(--overscroll-effects-bleed) + var(--safe-area-bottom))),
     center calc(100% - (var(--overscroll-effects-bleed) + var(--safe-area-bottom)));
   background-repeat: no-repeat;
   background-size:
-    100% calc(clamp(160px, calc(var(--viewport-effects-unit) * 34), 360px) + var(--safe-area-top)),
-    100% calc(clamp(160px, calc(var(--viewport-effects-unit) * 34), 360px) + var(--safe-area-bottom)),
-    100% calc(clamp(200px, calc(var(--viewport-effects-unit) * 42), 420px) + var(--safe-area-bottom));
+    100% calc(var(--edge-fade-height) + var(--safe-area-top)),
+    100% calc(var(--edge-fade-height) + var(--safe-area-bottom)),
+    100% calc(var(--edge-ambient-height) + var(--safe-area-bottom));
 }
 
 .backdrop {
@@ -163,12 +168,21 @@ body::after {
 
 .mobile-edge {
   position: fixed;
-  left: 0;
-  right: 0;
+  left: calc(var(--overscroll-effects-bleed) * -1 - var(--safe-area-left));
+  right: calc(var(--overscroll-effects-bleed) * -1 - var(--safe-area-right));
   background: var(--background);
   pointer-events: none;
-  z-index: 5;
+  z-index: 64;
   display: none;
+  overflow: hidden;
+}
+
+.mobile-edge::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
 }
 
 main,
@@ -600,18 +614,36 @@ body.is-menu-closing .site-menu-toggle__icon span:nth-child(3) {
 @media (max-width: 720px) {
   .mobile-edge {
     display: block;
-    left: calc(var(--safe-area-left) * -1);
-    right: calc(var(--safe-area-right) * -1);
   }
 
   .mobile-edge--top {
-    top: calc(var(--safe-area-top) * -1);
-    height: calc(var(--safe-area-top) + clamp(80px, 26vw, 120px));
+    top: calc(var(--overscroll-effects-bleed) * -1 - var(--safe-area-top));
+    height: calc(var(--overscroll-effects-bleed) + var(--safe-area-top) + var(--edge-fade-height));
+  }
+
+  .mobile-edge--top::after {
+    top: calc(var(--overscroll-effects-bleed) + var(--safe-area-top));
+    height: calc(var(--edge-fade-height) + var(--safe-area-top));
+    background-image: var(--edge-fade-gradient-top);
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
 
   .mobile-edge--bottom {
-    bottom: calc(var(--safe-area-bottom) * -1);
-    height: calc(var(--safe-area-bottom) + clamp(96px, 30vw, 168px));
+    bottom: calc(var(--overscroll-effects-bleed) * -1 - var(--safe-area-bottom));
+    height: calc(var(--overscroll-effects-bleed) + var(--safe-area-bottom) + var(--edge-ambient-height));
+  }
+
+  .mobile-edge--bottom::after {
+    bottom: calc(var(--overscroll-effects-bleed) + var(--safe-area-bottom));
+    height: calc(var(--edge-ambient-height) + var(--safe-area-bottom));
+    background-image: var(--edge-fade-gradient-bottom), var(--edge-ambient-gradient-bottom);
+    background-position: center bottom, center bottom;
+    background-repeat: no-repeat;
+    background-size:
+      100% calc(var(--edge-fade-height) + var(--safe-area-bottom)),
+      100% calc(var(--edge-ambient-height) + var(--safe-area-bottom));
   }
 
   .site-header {
