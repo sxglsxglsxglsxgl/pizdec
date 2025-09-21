@@ -25,15 +25,15 @@
   }
 }
 
-@supports (height: 100lvh) {
+@supports (height: 100dvh) {
   :root {
-    --viewport-effects-unit: 1lvh;
+    --viewport-unit: 1dvh;
   }
 }
 
-@supports (height: 100dvh) and not (height: 100svh) {
+@supports (height: 100lvh) {
   :root {
-    --viewport-unit: 1dvh;
+    --viewport-effects-unit: 1lvh;
   }
 }
 
