@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>MESTO — Inspired Tribute</title>
+  <meta name="description" content="An homage to MESTO's scrolling narrative experience." />
+  <meta property="og:title" content="MESTO — Inspired Tribute" />
+  <meta property="og:description" content="An homage to MESTO's scrolling narrative experience." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0b0b0b" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <div class="site-lockup">
+        <button
+          class="site-brand"
+          type="button"
+          data-scroll-to-sentences
+          aria-label="MESTO — scroll to first message"
+        >
+          MESTO
+        </button>
+      </div>
+      <button
+        class="site-menu-toggle"
+        type="button"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="site-menu"
+        aria-label="Open menu"
+      >
+        <span class="site-menu-toggle__icon" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <div
+    id="site-menu"
+    class="site-menu"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Site navigation"
+    aria-hidden="true"
+    hidden
+  >
+    <div class="site-menu__backdrop" data-menu-close></div>
+    <div class="site-menu__container" role="document" tabindex="-1" data-menu-focus>
+      <nav class="site-menu__nav" aria-label="Primary">
+        <ul class="site-menu__list" role="list">
+          <li class="site-menu__item">
+            <a href="#content" class="site-menu__link" data-menu-link>Branding</a>
+          </li>
+          <li class="site-menu__item">
+            <a href="#content" class="site-menu__link" data-menu-link>Packaging</a>
+          </li>
+          <li class="site-menu__item">
+            <a href="#content" class="site-menu__link" data-menu-link>Social Media</a>
+          </li>
+          <li class="site-menu__item">
+            <a href="#content" class="site-menu__link" data-menu-link>Templates</a>
+          </li>
+          <li class="site-menu__item">
+            <a href="#content" class="site-menu__link" data-menu-link>Web Design</a>
+          </li>
+          <li class="site-menu__item">
+            <a href="#content" class="site-menu__link" data-menu-link>Monthly Design</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <main id="content" aria-labelledby="content-title">
+    <h1 id="content-title" class="visually-hidden">MESTO inspired narrative</h1>
+    <section id="sentences" role="list" aria-live="polite"></section>
+  </main>
+
+  <footer class="site-footer" aria-label="Footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__column">
+        <h2>Inquiries</h2>
+        <a href="mailto:hello@classnoemesto.com">hello@classnoemesto.com</a>
+      </div>
+      <div class="site-footer__column">
+        <h2>Press</h2>
+        <a href="mailto:press@classnoemesto.com">press@classnoemesto.com</a>
+      </div>
+      <div class="site-footer__column">
+        <h2>Follow</h2>
+        <a
+          href="https://www.instagram.com/classnoemesto/"
+          target="_blank"
+          rel="noreferrer noopener"
+        >Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const SENTENCES = [
+      "MESTO is a creative collective of designers, architects, musicians, filmmakers, writers, and engineers.",
+      "We are fascinated by the traditions of craft and defined by the pursuit of excellence.",
+      "We imagine and build products, experiences, and organizations in close partnership with leaders we admire.",
+      "Our curiosity leads us to learn, to question, and to design with a respect for materials and for the people who use them.",
+      "We work from Saint Petersburg, collaborating around the world on projects that make life a little more thoughtful."
+    ];
+    window.SITE_CONFIG = { SENTENCES };
+  </script>
+  <script defer src="./script.js"></script>
+</body>
+</html>
