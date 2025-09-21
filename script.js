@@ -439,9 +439,10 @@
 
     const bindings = [];
 
-    const updateDynamicViewportEffects = () => {
+    const updateDynamicViewportUnits = () => {
+      const visualViewportHeight = window.visualViewport?.height;
       const height = pickDimension([
-        window.visualViewport?.height,
+        visualViewportHeight,
         window.innerHeight,
         document.documentElement?.clientHeight,
       ]);
@@ -450,8 +451,7 @@
         return;
       }
 
-      applyViewportEffectsHeight(height, { resolved: true });
-      broadcastViewportHeight(height);
+      applyViewportHeight(height);
     };
 
     const addListener = (target, type) => {
@@ -459,9 +459,9 @@
         return;
       }
 
-      target.addEventListener(type, updateDynamicViewportEffects);
+      target.addEventListener(type, updateDynamicViewportUnits);
       bindings.push(() => {
-        target.removeEventListener(type, updateDynamicViewportEffects);
+        target.removeEventListener(type, updateDynamicViewportUnits);
       });
     };
 
@@ -472,7 +472,7 @@
       addListener(window.visualViewport, 'resize');
     }
 
-    updateDynamicViewportEffects();
+    updateDynamicViewportUnits();
 
     window.__viewportUnitCleanup = () => {
       while (bindings.length) {
