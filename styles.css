@@ -161,6 +161,16 @@ body::after {
   background-size: 200px;
 }
 
+.mobile-edge {
+  position: fixed;
+  left: 0;
+  right: 0;
+  background: var(--background);
+  pointer-events: none;
+  z-index: 5;
+  display: none;
+}
+
 main,
 header,
 footer {
@@ -588,6 +598,22 @@ body.is-menu-closing .site-menu-toggle__icon span:nth-child(3) {
 }
 
 @media (max-width: 720px) {
+  .mobile-edge {
+    display: block;
+    left: calc(var(--safe-area-left) * -1);
+    right: calc(var(--safe-area-right) * -1);
+  }
+
+  .mobile-edge--top {
+    top: calc(var(--safe-area-top) * -1);
+    height: calc(var(--safe-area-top) + clamp(80px, 26vw, 120px));
+  }
+
+  .mobile-edge--bottom {
+    bottom: calc(var(--safe-area-bottom) * -1);
+    height: calc(var(--safe-area-bottom) + clamp(96px, 30vw, 168px));
+  }
+
   .site-header {
     --site-header-padding-block: clamp(36px, calc(var(--viewport-unit) * 14), 80px);
     --site-header-padding-inline: clamp(20px, 10vw, 40px);
