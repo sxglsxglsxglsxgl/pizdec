@@ -27,13 +27,13 @@
 
 @supports (height: 100dvh) {
   :root {
-    --viewport-unit: 1dvh;
+    --viewport-effects-unit: 1dvh;
   }
 }
 
-@supports (height: 100lvh) {
+@supports (height: 100dvh) and not (height: 100svh) {
   :root {
-    --viewport-effects-unit: 1lvh;
+    --viewport-unit: 1dvh;
   }
 }
 

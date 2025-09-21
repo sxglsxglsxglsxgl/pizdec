@@ -6,10 +6,6 @@
   const supportsDynamicViewport =
     hasCSSSupports && (CSS.supports('height: 100dvh') || CSS.supports('height: 100svh'));
 
-  if (supportsDynamicViewport) {
-    return;
-  }
-
   let pendingFrame = null;
   let lastViewportWidth = null;
   let lastViewportHeight = null;
@@ -361,7 +357,7 @@
     window.__viewportUnitCleanup = null;
   }
 
-  function initialize() {
+  function initializeFallback() {
     if (typeof window.__viewportUnitCleanup === 'function') {
       window.__viewportUnitCleanup();
     }
@@ -432,6 +428,68 @@
     window.addEventListener('pagehide', handlePageHide, { once: true });
   }
 
+  function initializeDynamic() {
+    if (typeof window.__viewportUnitCleanup === 'function') {
+      window.__viewportUnitCleanup();
+    }
+
+    window.removeEventListener('pagehide', handlePageHide);
+
+    lockedViewportHeight = null;
+
+    const bindings = [];
+
+    const updateDynamicViewportEffects = () => {
+      const height = pickDimension([
+        window.visualViewport?.height,
+        window.innerHeight,
+        document.documentElement?.clientHeight,
+      ]);
+
+      if (typeof height !== 'number' || !Number.isFinite(height) || height <= 0) {
+        return;
+      }
+
+      applyViewportEffectsHeight(height, { resolved: true });
+      broadcastViewportHeight(height);
+    };
+
+    const addListener = (target, type) => {
+      if (!target || typeof target.addEventListener !== 'function') {
+        return;
+      }
+
+      target.addEventListener(type, updateDynamicViewportEffects);
+      bindings.push(() => {
+        target.removeEventListener(type, updateDynamicViewportEffects);
+      });
+    };
+
+    addListener(window, 'resize');
+    addListener(window, 'orientationchange');
+
+    if (window.visualViewport) {
+      addListener(window.visualViewport, 'resize');
+    }
+
+    updateDynamicViewportEffects();
+
+    window.__viewportUnitCleanup = () => {
+      while (bindings.length) {
+        const remove = bindings.pop();
+        remove();
+      }
+      window.removeEventListener('pagehide', handlePageHide);
+      lockedViewportHeight = null;
+      root.style.removeProperty('--viewport-unit');
+      root.style.removeProperty('--viewport-effects-unit');
+    };
+
+    window.addEventListener('pagehide', handlePageHide, { once: true });
+  }
+
+  const initializeViewportUnits = supportsDynamicViewport ? initializeDynamic : initializeFallback;
+
   function handlePageShow(event) {
     if (!event.persisted) {
       return;
@@ -441,10 +499,10 @@
       return;
     }
 
-    initialize();
+    initializeViewportUnits();
   }
 
-  initialize();
+  initializeViewportUnits();
   window.addEventListener('pageshow', handlePageShow);
 })();
 
